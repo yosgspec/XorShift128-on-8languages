@@ -5,7 +5,7 @@ if __name__=="__main__":
 	rW=XorShift(XorShift.undefaultW())
 	print(">> rand 0 to UInt32Max")
 	for i in range(5):
-		print(rW.randInt())
+		print(rW.rand())
 
 	#0-100の乱数(100含む)を整数で取得
 	print(">> randInt 0 to 100")
