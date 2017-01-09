@@ -1,0 +1,58 @@
+#cmpopt varinit 1
+#packopt name "XorShift"
+#runtime "hsp3cl"
+#include "XorShift.as"
+
+#module TestXS
+	#deffunc main
+		;乱数の生データを取得
+		new@XorShift rW,undefaultW@XorShift
+		mes ">> xsRand 0 to UInt32Max"
+		repeat 5
+			mes xsRand(rW)
+		loop
+
+		;0-100の乱数(100含む)を整数で取得
+		new@XorShift r
+		mes ">> xsRandInt 0 to 100"
+		repeat 5
+			mes xsRandInt(r,0,100)
+		loop
+
+		;0-1の乱数を浮遊小数点で取得
+		mes ">> xsRandFloat 0 to 1"
+		repeat 5
+			mes xsRandFloat(r)
+		loop
+
+		;静的配列のシャッフル
+		mes ">> xsShuffle array"
+		dim a,20
+		foreach a: a(cnt)=cnt: loop
+		
+		xsShuffle r,a,aRand
+		out=""
+		foreach aRand: out+=str(aRand(cnt))+", ": loop
+		mes out
+		
+		out=""
+		foreach a: out+=str(a(cnt))+", ": loop
+		mes out
+
+		;デフォルトのシード値を取得
+		mes ">> defaults"
+		mes defaultX@XorShift
+		mes defaultY@XorShift
+		mes defaultZ@XorShift
+		mes undefaultW@XorShift
+
+		;今の乱数に与えたシード値初期値(wのみ)
+		mes ">> seedW"
+		mes seedW@XorShift(r)
+
+		;今の乱数を回した回数
+		mes ">> randCount"
+		mes randCount@XorShift(r)
+	return
+#global
+main
