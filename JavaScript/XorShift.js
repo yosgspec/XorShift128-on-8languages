@@ -1,6 +1,8 @@
 "use strict";
 
 module.exports=(()=>{
+	const r=Symbol();
+
 	class XorShift{
 		constructor(
 			w=0|(1103515245*Date.now()+12345)%0x7FFFFFFF,
@@ -11,7 +13,7 @@ module.exports=(()=>{
 			this.seedW=w;
 			Object.defineProperty(this,"seedW",{writable:false});
 			this.randCount=0;
-			this.__r=this.randGen(w,x,y,z);
+			this[r]=this.randGen(w,x,y,z);
 		}
 
 		*randGen(w,x,y,z){
@@ -21,13 +23,13 @@ module.exports=(()=>{
 				x=y;
 				y=z;
 				z=w;
-				yield w=((w^(w>>>19))^(t^(t>>>8)))>>>0;
+				yield w=((w^(w>>>19))^(t^(t>>>8)))>>>0;;
 			}
 		}
 
 		rand(){
 			this.randCount=0|this.randCount+1;
-			return this.__r.next().value;
+			return this[r].next().value;
 		}
 
 		randInt(min=0,max=0x7FFFFFFF){
