@@ -1,28 +1,29 @@
+#include <stdint.h>
 #include <vector>
 #include <ctime>
 
 namespace XorShifts{
 	class XorShift{
 	private:
-		unsigned x;
-		unsigned y;
-		unsigned z;
-		unsigned w;
-		unsigned t;
+		uint32_t x;
+		uint32_t y;
+		uint32_t z;
+		uint32_t w;
+		uint32_t t;
 
 	public:
-		static const unsigned defaultX=123456789;
-		static const unsigned defaultY=362436069;
-		static const unsigned defaultZ=521288629;
-		static const unsigned undefaultW=88675123;
-		unsigned randCount=0;
-		const unsigned seedW;
+		static const uint32_t defaultX=123456789;
+		static const uint32_t defaultY=362436069;
+		static const uint32_t defaultZ=521288629;
+		static const uint32_t undefaultW=88675123;
+		uint32_t randCount=0;
+		const uint32_t seedW;
 
 		XorShift(
-			unsigned w=(1103515245*time(nullptr)+12345)%0x7FFFFFFF,
-			unsigned x=defaultX,
-			unsigned y=defaultY,
-			unsigned z=defaultZ
+			uint32_t w=(1103515245*time(nullptr)+12345)%0x7FFFFFFF,
+			uint32_t x=defaultX,
+			uint32_t y=defaultY,
+			uint32_t z=defaultZ
 		):seedW(w){
 			this->x=x;
 			this->y=y;
@@ -30,9 +31,9 @@ namespace XorShifts{
 			this->w=w;
 		}
 
-		unsigned rand(){
+		uint32_t rand(){
 			randCount++;
-			unsigned t=x^(x<<11);
+			uint32_t t=x^(x<<11);
 			x=y;
 			y=z;
 			z=w;
