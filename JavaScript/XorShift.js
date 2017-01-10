@@ -23,7 +23,7 @@ module.exports=(()=>{
 				x=y;
 				y=z;
 				z=w;
-				yield w=((w^(w>>>19))^(t^(t>>>8)))>>>0;;
+				yield w=((w^(w>>>19))^(t^(t>>>8)))>>>0;
 			}
 		}
 
