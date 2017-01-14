@@ -14,7 +14,7 @@ XorShift128 on C++, Dlang, C#, VB.Net, JavaScript(Node.js) ,Python3, HSP, Common
 # Basic structure
 
     class XorShift([w: uint, x: uint, y: uint, z: uint]){
-        class defaultSeed():XorShift
+        class defaultSeed(): super(XorShift)
         
         static property defaults: Dictionary<string,uint>
         
