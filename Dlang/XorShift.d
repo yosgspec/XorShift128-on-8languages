@@ -8,28 +8,31 @@ private:
 	Generator!uint r;
 
 public:
-	static uint defaultX=123456789;
-	static uint defaultY=362436069;
-	static uint defaultZ=521288629;
-	static uint undefaultW=88675123;
-	uint seedW;
+	static immutable uint[string] defaults;
+	static this(){
+		defaults=[
+			"x":123456789,
+			"y":362436069,
+			"z":521288629,
+			"w":88675123
+		];
+	}
+	immutable uint[string] seeds;
 	uint randCount=0;
 
 	this(
-		uint w=cast(uint)(1103515245*Clock.currStdTime()+12345)%0x7FFFFFFF,
-		uint x=defaultX,
-		uint y=defaultY,
-		uint z=defaultZ
+		uint w=cast(uint)Clock.currStdTime(),
+		uint x=0x7FFFFFF7,uint y=0x7FFFFFF7,uint z=0x7FFFFFF7
 	){
-		seedW=w;
+		if(x==0x7FFFFFF7) x=w<<13;
+		if(y==0x7FFFFFF7) y=(w>>9)^(x<<6);
+		if(z==0x7FFFFFF7) z=y>>7;
+		seeds=["x":x,"y":y,"z":z,"w":w];
 		r=randGen(w,x,y,z);
 	}
 
 	Generator!uint function(uint,uint,uint,uint) randGen=(w,x,y,z)=>new Generator!uint((){
 		yield(w);
-		uint x=123456789;
-		uint y=362436069;
-		uint z=521288629;
 		uint t;
 		for(;;){
 			t=x^(x<<11);
@@ -54,7 +57,7 @@ public:
 		return cast(float)(rand()%0xFFFF)/0xFFFF*(max-min)+min;
 	}
 
-	public template shuffle(T){
+	template shuffle(T){
 		T[] shuffle(T[] _arr){
 			auto arr=new T[_arr.length];
 			arr[]=_arr;
@@ -65,6 +68,18 @@ public:
 				arr[r]=tmp;
 			}
 			return arr;
+		}
+	}
+
+	static class defaultSeed:XorShift{
+	public:
+		this(){
+			super(
+				XorShift.defaults["w"],
+				XorShift.defaults["x"],
+				XorShift.defaults["y"],
+				XorShift.defaults["z"]
+			);
 		}
 	}
 }

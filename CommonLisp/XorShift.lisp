@@ -1,14 +1,12 @@
 (provide :XorShifts)
 (defpackage XorShifts
 	(:use common-lisp)
-	(:nicknames :XS)
+	(:nicknames :xs)
 	(:export
 		:XorShift
-		:defaultX
-		:defaultY
-		:defaultZ
-		:undefaultW
-		:seedW
+		:XorShift-defaultSeed
+		:defaults
+		:seeds
 		:randCount
 		:rand
 		:randInt
@@ -16,28 +14,47 @@
 		:shuffle))
 (in-package XorShifts)
 
-(defun defaultX() 123456789)
-(defun defaultY() 362436069)
-(defun defaultZ() 521288629)
-(defun undefaultW() 88675123)
+(defparameter defaults '(
+	(:x . 123456789)
+	(:y . 362436069)
+	(:z . 521288629)
+	(:w . 88675123)
+))
+
 (defclass XorShift()(
+	(w	:initarg :w
+		:initform (get-universal-time))
 	(x	:initarg :x
-		:initform (defaultX))
+		:initform nil)
 	(y	:initarg :y
-		:initform (defaultY))
+		:initform nil)
 	(z	:initarg :z
-		:initform (defaultZ))
-	(w)
-	(seedW
-		:initarg :w
-		:reader seedW
-		:initform (mod(+(* 1103515245 (get-universal-time)) 12345) #x7FFFFFFF))
+		:initform nil)
+	(seeds
+		:initform nil)
 	(randCount
 		:reader randCount
 		:initform 0)))
 
+(defmethod new((me XorShift))
+	(unless (slot-value me 'x) (setf (slot-value me 'x) (ash(slot-value me 'w) 13)))
+	(unless (slot-value me 'y) (setf (slot-value me 'y) (logxor (ash(slot-value me 'w) -9) (ash(slot-value me 'x) 6))))
+	(unless (slot-value me 'z) (setf (slot-value me 'z) (ash(slot-value me 'y) -7)))
+	(setf (slot-value me 'seeds) `(
+		(:x . ,(slot-value me 'x))
+		(:y . ,(slot-value me 'y))
+		(:z . ,(slot-value me 'z))
+		(:w . ,(slot-value me 'w))
+	))
+)
+
+(defmethod seeds((me XorShift))
+	(if (= (randCount me) 0) (new me))
+	(slot-value me 'seeds)
+)
+
 (defmethod rand((me XorShift))
-	(if (= (randCount me) 0) (setf (slot-value me 'w) (slot-value me 'seedW)))
+	(if (= (randCount me) 0) (new me))
 	(incf (slot-value me 'randCount))
 	(let (
 		(x (slot-value me 'x))
@@ -46,11 +63,11 @@
 		(w (slot-value me 'w))
 		tt
 	)
-			(setf tt (logxor x (logand (ash x 11) #xFFFFFFFF)))
-			(setf (slot-value me 'x) y)
-			(setf (slot-value me 'y) z)
-			(setf (slot-value me 'z) w)
-			(setf (slot-value me 'w) (logxor (logxor w (ash w -19)) (logxor tt (ash tt -8))))))
+		(setf tt (logxor x (logand (ash x 11) #xFFFFFFFF)))
+		(setf (slot-value me 'x) y)
+		(setf (slot-value me 'y) z)
+		(setf (slot-value me 'z) w)
+		(setf (slot-value me 'w) (logxor (logxor w (ash w -19)) (logxor tt (ash tt -8))))))
 
 (defmethod randInt((me XorShift) &optional (min 0) (max #x7FFFFFFF))
 	(+(mod(rand me) (1+(- max min))) min))
@@ -66,3 +83,9 @@
 			(setf (elt arr i) (elt arr r))
 			(setf (elt arr r) tmp)))
 		arr))
+
+(defclass XorShift-defaultSeed(XorShift)(
+	(w :initform (rest(assoc :w defaults)))
+	(x :initform (rest(assoc :x defaults)))
+	(y :initform (rest(assoc :y defaults)))
+	(z :initform (rest(assoc :z defaults)))))

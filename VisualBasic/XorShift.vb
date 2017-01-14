@@ -5,21 +5,29 @@ Imports System.Linq
 Namespace XorShifts
 	Class XorShift
 		Private r As IEnumerator(Of UInteger)
-		Public Const defaultX=123456789UI
-		Public Const defaultY=362436069UI
-		Public Const defaultZ=521288629UI
-		Public Const undefaultW=88675123UI
-		Public ReadOnly seedW As UInteger
+		Public Shared ReadOnly defaults As New Dictionary(Of String,UInteger) From {
+			{"x",123456789},
+			{"y",362436069},
+			{"z",521288629},
+			{"w",88675123}
+		}
+		Public ReadOnly seeds As Dictionary(Of String,UInteger)
 		Public randCount As UInteger=0
 
 		Sub New(
-			Optional w As UInteger?=Nothing,
-			Optional x As UInteger=defaultX,
-			Optional y As UInteger=defaultY,
-			Optional z As UInteger=defaultZ
+			Optional _w As UInteger?=Nothing,
+			Optional _x As UInteger?=Nothing,
+			Optional _y As UInteger?=Nothing,
+			Optional _z As UInteger?=Nothing
 		)
-			seedW=If(w IsNot Nothing,CUInt(w),CUInt((1103515245UI*Environment.TickCount+12345UI) mod &H7FFFFFFFUI))
-			r=randGen(seedW,x,y,z)
+			Dim w=CUInt(If(_w IsNot Nothing,_w,CUInt(Environment.TickCount)))
+			Dim x=CUInt(If(_x IsNot Nothing,_x,w<<13))
+			Dim y=CUInt(If(_y IsNot Nothing,_y,w>>9 Xor x<<6))
+			Dim z=CUInt(If(_z IsNot Nothing,_z,y>>7))
+			seeds=New Dictionary(Of String,UInteger) From {
+				{"x",x},{"y",y},{"z",z},{"w",w}
+			}
+			r=randGen(w,x,y,z)
 		End Sub
 
 		Public Iterator Function randGen(w As UInteger,x As UInteger,y As UInteger,z As UInteger) As IEnumerator(Of UInteger)
@@ -69,5 +77,17 @@ Namespace XorShifts
 			Next
 			Return arr
 		End Function
+
+		PubLic Class defaultSeed
+			Inherits XorShift
+			Sub New()
+				MyBase.New(
+				defaults("w"),
+				defaults("x"),
+				defaults("y"),
+				defaults("z")
+				)
+			End Sub
+		End Class
 	End Class
 End Namespace

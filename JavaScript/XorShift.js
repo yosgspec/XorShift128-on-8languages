@@ -2,16 +2,16 @@
 
 module.exports=(()=>{
 	const r=Symbol();
-
 	class XorShift{
 		constructor(
-			w=0|(1103515245*Date.now()+12345)%0x7FFFFFFF,
-			x=XorShift.defaultX,
-			y=XorShift.defaultY,
-			z=XorShift.defaultZ
+			w=0|Date.now(),
+			x,y,z
 		){
-			this.seedW=w;
-			Object.defineProperty(this,"seedW",{writable:false});
+			if(x===undefined) x=0|w<<13;
+			if(y===undefined) y=0|(w>>>9)^(x<<6);
+			if(z===undefined) z=0|y>>>7;
+			this.seeds={x:x>>>0,y:y>>>0,z:z>>>0,w:w>>>0};
+			Object.defineProperty(this,"seeds",{writable:false});
 			this.randCount=0;
 			this[r]=this.randGen(w,x,y,z);
 		}
@@ -51,10 +51,25 @@ module.exports=(()=>{
 			return arr;
 		}
 	}
-	XorShift.defaultX=123456789;
-	XorShift.defaultY=362436069;
-	XorShift.defaultZ=521288629;
-	XorShift.undefaultW=88675123;
+	XorShift.defaults={
+		x:123456789,
+		y:362436069,
+		z:521288629,
+		w:88675123
+	};
+
+	XorShift.defaultSeed=class XorShift_default extends XorShift{
+		constructor(){
+			super(
+				XorShift.defaults["w"],
+				XorShift.defaults["x"],
+				XorShift.defaults["y"],
+				XorShift.defaults["z"]
+			);
+		}
+	}
+
 	Object.freeze(XorShift);
+
 	return XorShift;
 })();

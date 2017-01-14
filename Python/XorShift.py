@@ -2,21 +2,23 @@ from time import time
 from copy import copy
 
 class XorShift:
-	defaultX=lambda:123456789
-	defaultY=lambda:362436069
-	defaultZ=lambda:521288629
-	undefaultW=lambda:88675123
+	defaults={
+		"x":123456789,
+		"y":362436069,
+		"z":521288629,
+		"w":88675123
+	}
 
 	def __init__(self,
-		w=int(1103515245*time()+12345)%0x7FFFFFFF,
+		w=int(time()),
 		x=None,
 		y=None,
 		z=None
 	):
-		if x is None:x=XorShift.defaultX()
-		if y is None:y=XorShift.defaultY()
-		if z is None:z=XorShift.defaultZ()
-		self.seedW=lambda:w
+		if x is None: x=w<<13
+		if y is None: y=(w>>9)^(x<<6)
+		if z is None: z=y>>7
+		self.seeds={"x":x,"y":y,"z":z,"w":w}
 		self.randCount=0
 		self.__r=self.randGen(w,x,y,z)
 
@@ -55,3 +57,12 @@ class XorShift:
 		if not isList:
 			arr=iter(arr)
 		return arr
+
+	def defaultSeed():return type("defaultSeed",(XorShift,),{
+		"__init__":lambda self:
+			XorShift.__init__(
+				self,
+				**XorShift.defaults
+			)
+	})()
+

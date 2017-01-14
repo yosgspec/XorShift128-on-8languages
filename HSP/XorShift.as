@@ -1,36 +1,45 @@
 #cmpopt varinit 1
 
-#module XorShift x,y,z,w,_seedW,_randCount
-	#uselib "Kernel32"
-	#cfunc GetTickCount "GetTickCount"
+#module XorShift x,y,z,w,seeds,randCount
+	#deffunc local staticNew
+		seedKeys="x","y","z","w"
+		defaults=123456789,362436069,521288629,88675123
+	return
 
-	#const defaultX 123456789
-	#const defaultY 362436069
-	#const defaultZ 521288629
-	#const undefaultW 88675123
-	#modcfunc local seedW
-		return _seedW
-	#modcfunc local randCount
-		return _randCount
+	#define global xsSeedKeys seedKeys@XorShift
+	#define global ctype xsDefaults(%1) getDictionary@XorShift(%1,defaults@XorShift)
+	#modcfunc xsSeeds str key
+		return getDictionary(key,seeds)
 
-	#define new( \
-		%1, \
-		%2=-1, \
-		%3=defaultX@XorShift, \
-		%4=defaultY@XorShift, \
-		%5=defaultZ@XorShift \
-	) dimtype %1,vartype("struct"): newmod %1,XorShift,%2,%3,%4,%5
+	#modcfunc xsRandCount
+		return randCount
+
+	#defcfunc local getDictionary str key,array dict
+		item="undefined"
+		foreach seedKeys
+			if key=seedKeys(cnt):item=dict(cnt):break
+		loop
+	return item
+
+	#define new(%1,%2=-1,%3=-1,%4=-1,%5=-1) \
+		dimtype %1,vartype("struct"): \
+		newmod %1,XorShift,%2,%3,%4,%5
 	#modinit int _w,int _x,int _y,int _z
-		if _w!=-1 :w=_w :else :w=(1103515245*GetTickCount()+12345)\0x7FFFFFFF
-		_seedW=w
+		if _w!=-1 :w=_w :else :w=gettime(7)+1000*(gettime(6)+60*(gettime(5)+60*(gettime(4)+24*gettime(3))))
+		if _x!=-1 :x=_x :else :x=w<<13
+		if _y!=-1 :y=_y :else :y=(w>>9)^(x<<6)
+		if _z!=-1 :z=_z :else :z=y>>7
+
+		dim seeds,4
+		seeds(0)=double(strf("%u",x))
+		seeds(1)=double(strf("%u",y))
+		seeds(2)=double(strf("%u",z))
+		seeds(3)=double(strf("%u",w))
 		randCount=0
-		x=_x
-		y=_y
-		z=_z
 	return
 
 	#modcfunc xsRand
-		_randCount++
+		randCount++
 		t=x^(x<<11)
 		x=y
 		y=z
@@ -61,4 +70,14 @@
 			arr(r)=tmp
 		loop
 	return
+#global
+staticNew@XorShift
+
+#module XorShift_defaultSeed
+	#define new(%1) new@XorShift \
+		%1, \
+		xsDefaults("w"), \
+		xsDefaults("x"), \
+		xsDefaults("y"), \
+		xsDefaults("z")
 #global

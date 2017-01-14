@@ -1,10 +1,12 @@
 #include <stdint.h>
+#include <string>
 #include <vector>
 #include <ctime>
 
 namespace XorShifts{
 	class XorShift{
 	private:
+		struct dictionary{uint32_t x;uint32_t y;uint32_t z;uint32_t w;};
 		uint32_t x;
 		uint32_t y;
 		uint32_t z;
@@ -12,23 +14,21 @@ namespace XorShifts{
 		uint32_t t;
 
 	public:
-		static const uint32_t defaultX=123456789;
-		static const uint32_t defaultY=362436069;
-		static const uint32_t defaultZ=521288629;
-		static const uint32_t undefaultW=88675123;
+		static const struct dictionary defaults;
 		uint32_t randCount=0;
-		const uint32_t seedW;
+		struct dictionary seeds;
 
 		XorShift(
-			uint32_t w=(1103515245*time(nullptr)+12345)%0x7FFFFFFF,
-			uint32_t x=defaultX,
-			uint32_t y=defaultY,
-			uint32_t z=defaultZ
-		):seedW(w){
-			this->x=x;
-			this->y=y;
-			this->z=z;
-			this->w=w;
+			uint32_t w=time(nullptr),
+			uint32_t x=NULL,
+			uint32_t y=NULL,
+			uint32_t z=NULL
+		){
+			x=x!=NULL? x: w<<13;
+			y=y!=NULL? y: (w>>9)^(x<<6);
+			z=z!=NULL? z: y>>7;
+			seeds={x,y,z,w};
+			this->w=w;this->x=x;this->y=y;this->z=z;
 		}
 
 		uint32_t rand(){
@@ -70,5 +70,21 @@ namespace XorShifts{
 			}
 			return arr;
 		}
+
+		static inline XorShift defaultSeed(){
+			return XorShift( 
+				XorShift::defaults.w,
+				XorShift::defaults.x,
+				XorShift::defaults.y,
+				XorShift::defaults.z
+			);
+		}
+	};
+
+	const struct XorShift::dictionary XorShift::defaults={
+		123456789,
+		362436069,
+		521288629,
+		88675123
 	};
 }

@@ -5,18 +5,38 @@ using namespace std;
 using namespace XorShifts;
 
 int main(){
+	//XorShift乱数ジェネレータの初期化
+	// 論文デフォルトシード
+	auto r_def=XorShift::defaultSeed();
+	// 固定値シード
+	auto r_const=XorShift(100);
+	// 時間シード
+	auto r=XorShift();
+
+	//デフォルトシード値の取得
+	cout<<">> defaults"<<endl;
+	cout<<"x:"<<XorShift::defaults.x<<endl;
+	cout<<"y:"<<XorShift::defaults.y<<endl;
+	cout<<"z:"<<XorShift::defaults.z<<endl;
+	cout<<"w:"<<XorShift::defaults.w<<endl;
+
+	//適用したシード値の取得
+	cout<<">> seeds in r"<<endl;
+	cout<<"x:"<<r.seeds.x<<endl;
+	cout<<"y:"<<r.seeds.y<<endl;
+	cout<<"z:"<<r.seeds.z<<endl;
+	cout<<"w:"<<r.seeds.w<<endl;
+
 	//乱数の生データを取得
-	auto rW=XorShift(XorShift::undefaultW);
 	cout<<">> rand 0 to UInt32Max"<<endl;
 	for(int i=0;i<5;i++){
-		cout<<rW.rand()<<endl;
+		cout<<r_def.rand()<<endl;
 	}
 
 	//0-100の乱数(100含む)を整数で取得
 	cout<<">> randInt 0 to 100"<<endl;
-	auto r=XorShift(XorShift::undefaultW);
 	for(int i=0;i<5;i++){
-		cout<<r.randInt(0,100)<<endl;
+		cout<<r_const.randInt(0,100)<<endl;
 	}
 
 	//0-1の乱数を浮遊小数点で取得
@@ -26,14 +46,14 @@ int main(){
 	}
 
 	//静的配列のシャッフル
+	//値渡しとなるので元の配列は破壊されない
 	cout<<">> shuffle array"<<endl;
-	int a[20],aCopy[20];
-	int* aRand;
+	int a[20],a_copy[20];
 	for(int i=0;i<20;i++) a[i]=i;
-	int aLength=sizeof(a)/sizeof(a[0]);
+	int a_length=sizeof(a)/sizeof(a[0]);
 
-	aRand=r.shuffle(a,aCopy,aLength);
-	for(int i=0;i<aLength;i++) cout<<aRand[i]<<", ";
+	int* a_rand=r.shuffle(a,a_copy,a_length);
+	for(int i=0;i<a_length;i++) cout<<a_rand[i]<<", ";
 	cout<<endl;
 	for(auto val:a) cout<<val<<", ";
 	cout<<endl;
@@ -48,18 +68,7 @@ int main(){
 	for(auto val:b) cout<<val<<", ";
 	cout<<endl;
 
-	//デフォルトのシード値を取得
-	cout<<">> defaults"<<endl;
-	cout<<XorShift::defaultX<<endl;
-	cout<<XorShift::defaultY<<endl;
-	cout<<XorShift::defaultZ<<endl;
-	cout<<XorShift::undefaultW<<endl;
-
-	//今の乱数に与えたシード値初期値(wのみ)
-	cout<<">> seedW"<<endl;
-	cout<<r.seedW<<endl;
-
 	//今の乱数を回した回数
-	cout<<">> randCount"<<endl;
+	cout<<">> randCount in r"<<endl;
 	cout<<r.randCount<<endl;
 }

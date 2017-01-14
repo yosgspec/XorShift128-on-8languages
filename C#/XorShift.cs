@@ -4,21 +4,24 @@ using System.Collections.Generic;
 namespace XorShifts{
 	class XorShift{
 		private IEnumerator<uint> r;
-		public const uint defaultX=123456789;
-		public const uint defaultY=362436069;
-		public const uint defaultZ=521288629;
-		public const uint undefaultW=88675123;
-		public readonly uint seedW;
+		public static readonly Dictionary<string,uint> defaults=new Dictionary<string,uint>(){
+			{"x",123456789},
+			{"y",362436069},
+			{"z",521288629},
+			{"w",88675123}
+		};
+		public readonly Dictionary<string,uint> seeds;
 		public uint randCount=0;
 
-		public XorShift(
-			uint? w=null,
-			uint x=defaultX,
-			uint y=defaultY,
-			uint z=defaultZ
-		){
-			seedW=w!=null?(uint)w:(uint)(1103515245*Environment.TickCount+12345)%0x7FFFFFFF;
-			r=randGen(seedW,x,y,z);
+		public XorShift(uint? _w=null,uint? _x=null,uint? _y=null,uint? _z=null){
+			uint w=_w ?? (uint)Environment.TickCount;
+			uint x=_x ?? w<<13;
+			uint y=_y ?? (w>>9)^(x<<6);
+			uint z=_z ?? y>>7;
+			seeds=new Dictionary<string,uint>(){
+				{"x",x},{"y",y},{"z",z},{"w",w}
+			};
+			r=randGen(w,x,y,z);
 		}
 
 		public IEnumerator<uint> randGen(uint w,uint x,uint y,uint z){
@@ -66,6 +69,15 @@ namespace XorShifts{
 				arr[r]=tmp;
 			}
 			return arr;
+		}
+
+		public class defaultSeed:XorShift{
+			public defaultSeed():base(
+				defaults["w"],
+				defaults["x"],
+				defaults["y"],
+				defaults["z"]
+			){}
 		}
 	}
 }
