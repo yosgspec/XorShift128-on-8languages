@@ -15,15 +15,11 @@ class TestXS{
 
 		//デフォルトシード値の取得
 		Console.WriteLine(">> defaults");
-		foreach(var i in XorShift.defaults.Keys){
-			Console.WriteLine("{0}:{1}",i,XorShift.defaults[i]);
-		}
+		Console.WriteLine(String.Join(", ",XorShift.defaults));
 
 		//適用したシード値の取得
 		Console.WriteLine(">> seeds in r");
-		foreach(var i in r.seeds.Keys){
-			Console.WriteLine("{0}:{1}",i,XorShift.defaults[i]);
-		}
+		Console.WriteLine(String.Join(", ",r.seeds));
 
 		//乱数の生データを取得
 		Console.WriteLine(">> rand 0 to UInt32Max");

@@ -65,4 +65,3 @@ class XorShift:
 				**XorShift.defaults
 			)
 	})()
-

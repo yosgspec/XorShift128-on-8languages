@@ -16,15 +16,11 @@ Module TestXS
 
 		'デフォルトシード値の取得
 		WriteLine(">> defaults")
-		For Each i In XorShift.defaults.Keys
-			WriteLine("{0}:{1}",i,XorShift.defaults(i))
-		Next
+		WriteLine(String.Join(", ",XorShift.defaults))
 
 		'適用したシード値の取得
 		WriteLine(">> seeds in r")
-		For Each i In r.seeds.Keys
-			WriteLine("{0}:{1}",i,XorShift.defaults(i))
-		Next
+		WriteLine(String.Join(", ",r.seeds))
 
 		'乱数の生データを取得
 		WriteLine(">> rand 0 to UInt32Max")
