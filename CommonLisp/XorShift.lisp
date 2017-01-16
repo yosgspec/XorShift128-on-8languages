@@ -14,7 +14,7 @@
 		:shuffle))
 (in-package XorShifts)
 
-(defparameter defaults '(
+(defconstant defaults '(
 	(:x . 123456789)
 	(:y . 362436069)
 	(:z . 521288629)
@@ -37,15 +37,17 @@
 		:initform 0)))
 
 (defmethod new((me XorShift))
-	(unless (slot-value me 'x) (setf (slot-value me 'x) (ash(slot-value me 'w) 13)))
-	(unless (slot-value me 'y) (setf (slot-value me 'y) (logxor (ash(slot-value me 'w) -9) (ash(slot-value me 'x) 6))))
-	(unless (slot-value me 'z) (setf (slot-value me 'z) (ash(slot-value me 'y) -7)))
-	(setf (slot-value me 'seeds) `(
-		(:x . ,(slot-value me 'x))
-		(:y . ,(slot-value me 'y))
-		(:z . ,(slot-value me 'z))
-		(:w . ,(slot-value me 'w))
-	))
+	(with-slots (w x y z seeds) me 
+		(unless x (setf x (ash w 13)))
+		(unless y (setf y (logxor (ash w -9) (ash x 6))))
+		(unless z (setf z (ash y -7)))
+		(setf seeds `(
+			(:x . ,x)
+			(:y . ,y)
+			(:z . ,z)
+			(:w . ,w)
+		))
+	)
 )
 
 (defmethod seeds((me XorShift))
@@ -56,18 +58,16 @@
 (defmethod rand((me XorShift))
 	(if (= (randCount me) 0) (new me))
 	(incf (slot-value me 'randCount))
-	(let (
-		(x (slot-value me 'x))
-		(y (slot-value me 'y))
-		(z (slot-value me 'z))
-		(w (slot-value me 'w))
-		tt
+	(with-slots (w x y z) me
+		(let (tt)
+			(setf tt (logxor x (logand (ash x 11) #xFFFFFFFF)))
+			(setf x y)
+			(setf y z)
+			(setf z w)
+			(setf w (logxor (logxor w (ash w -19)) (logxor tt (ash tt -8))))
+		)
 	)
-		(setf tt (logxor x (logand (ash x 11) #xFFFFFFFF)))
-		(setf (slot-value me 'x) y)
-		(setf (slot-value me 'y) z)
-		(setf (slot-value me 'z) w)
-		(setf (slot-value me 'w) (logxor (logxor w (ash w -19)) (logxor tt (ash tt -8))))))
+)
 
 (defmethod randInt((me XorShift) &optional (min 0) (max #x7FFFFFFF))
 	(+(mod(rand me) (1+(- max min))) min))
