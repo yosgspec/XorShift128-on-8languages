@@ -1,6 +1,6 @@
 #cmpopt varinit 1
 
-#module XorShift x,y,z,w,seeds,randCount
+#module XorShift seeds,randCount
 	#deffunc local staticNew
 		seedKeys="x","y","z","w"
 		defaults=123456789,362436069,521288629,88675123
@@ -48,12 +48,12 @@
 	return double(strf("%u",w))
 
 	#define global ctype xsRandInt(%1,%2=0,%3=0x7FFFFFFF) randInt@XorShift(%1,%2,%3)
-	#defcfunc local randInt var this,int min,int max
-		return int(xsRand(this)\(max+1-min)+min)
+	#modcfunc local randInt int min,int max
+		return int(xsRand(thismod)\(max+1-min)+min)
 
 	#define global ctype xsRandFloat(%1,%2=0,%3=1) randFloat@XorShift(%1,%2,%3)
-	#defcfunc local randFloat var this,double min,double max
-		return xsRand(this)\0xFFFF/0xFFFF*(max-min)+min
+	#modcfunc local randFloat double min,double max
+		return xsRand(thismod)\0xFFFF/0xFFFF*(max-min)+min
 
 	#define global xsShuffle(%1,%2,%3) %tshuffle \
 		%i=length(%2) :\
@@ -61,10 +61,10 @@
 		foreach %3: %3(cnt)=%2(cnt): loop :\
 		shuffle@XorShift %1,%o,%3
 
-	#deffunc local shuffle var this,var arrLength,array arr
+	#modfunc local shuffle var arrLength,array arr
 		dimtype tmp,vartype(arr(0))
 		repeat arrLength-1
-			r=xsRandInt(this,cnt,arrLength-1)
+			r=xsRandInt(thismod,cnt,arrLength-1)
 			tmp=arr(cnt)
 			arr(cnt)=arr(r)
 			arr(r)=tmp
