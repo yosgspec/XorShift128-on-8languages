@@ -13,7 +13,7 @@
 
 	;今の乱数に与えたシード値初期値
 	(format t ">> seeds in r~%")
-	(format t "~d~%" (xs:seeds r))
+	(format t "~a~%" (xs:seeds r))
 
 	;乱数の生データを取得
 	(format t ">> rand 0 to UInt32Max~%")
