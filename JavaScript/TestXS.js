@@ -3,48 +3,48 @@
 const XorShift=require("./XorShift");
 
 (function(){
-	//XorShiftä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã®åˆæœŸåŒ–
-	// è«–æ–‡ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚·ãƒ¼ãƒ‰
+	//XorShift—”ƒWƒFƒlƒŒ[ƒ^‚Ì‰Šú‰»
+	// ˜_•¶ƒfƒtƒHƒ‹ƒgƒV[ƒh
 	const r_def=new XorShift.defaultSeed();
-	// å›ºå®šå€¤ã‚·ãƒ¼ãƒ‰
+	// ŒÅ’è’lƒV[ƒh
 	const r_const=new XorShift(100);
-	// æ™‚é–“ã‚·ãƒ¼ãƒ‰
+	// ŽžŠÔƒV[ƒh
 	const r=new XorShift();
 
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚·ãƒ¼ãƒ‰å€¤ã®å–å¾—
+	//ƒfƒtƒHƒ‹ƒgƒV[ƒh’l‚ÌŽæ“¾
 	console.log(">> defaults");
 	console.log(XorShift.defaults);
 
-	//é©ç”¨ã—ãŸã‚·ãƒ¼ãƒ‰å€¤ã®å–å¾—
+	//“K—p‚µ‚½ƒV[ƒh’l‚ÌŽæ“¾
 	console.log(">> seeds in r");
 	console.log(r.seeds);
 
-	//ä¹±æ•°ã®ç”Ÿãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+	//—”‚Ì¶ƒf[ƒ^‚ðŽæ“¾
 	console.log(">> rand 0 to UInt32Max");
 	for(let i=0;i<5;i++){
 		console.log(r_def.rand());
 	}
 
-	//0-100ã®ä¹±æ•°(100å«ã‚€)ã‚’æ•´æ•°ã§å–å¾—
+	//0-100‚Ì—”(100ŠÜ‚Þ)‚ð®”‚ÅŽæ“¾
 	console.log(">> randInt 0 to 100");
 	for(let i=0;i<5;i++){
 		console.log(r_const.randInt(0,100));
 	}
 
-	//0-1ã®ä¹±æ•°ã‚’æµ®éŠå°æ•°ç‚¹ã§å–å¾—
+	//0-1‚Ì—”‚ð•‚—V¬”“_‚ÅŽæ“¾
 	console.log(">> randFloat 0 to 1");
 	for(let i=0;i<5;i++){
 		console.log(r.randFloat());
 	}
 
-	//é…åˆ—ã®ã‚·ãƒ£ãƒƒãƒ•ãƒ«
-	//å€¤æ¸¡ã—ã¨ãªã‚‹ã®ã§å…ƒã®é…åˆ—ã¯ç ´å£Šã•ã‚Œãªã„
+	//”z—ñ‚ÌƒVƒƒƒbƒtƒ‹
+	//’l“n‚µ‚Æ‚È‚é‚Ì‚ÅŒ³‚Ì”z—ñ‚Í”j‰ó‚³‚ê‚È‚¢
 	console.log(">> shuffle Array");
 	var a=[...Array(20).keys()];
 	console.log(r.shuffle(a));
 	console.log(a);
 
-	//ä»Šã®ä¹±æ•°ã‚’å›žã—ãŸå›žæ•°
+	//¡‚Ì—”‚ð‰ñ‚µ‚½‰ñ”
 	console.log(">> randCount in r");
 	console.log(r.randCount);
 })();

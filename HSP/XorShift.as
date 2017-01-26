@@ -1,5 +1,3 @@
-#cmpopt varinit 1
-
 #module XorShift seeds,randCount
 	#deffunc local staticNew
 		seedKeys="x","y","z","w"
@@ -44,16 +42,16 @@
 		x=y
 		y=z
 		z=w
-		w=(w^(w>>19&0x1FFF))^(t^(t>>8&0xFFFFFF))
+		w=(w^(w>>19&$1FFF))^(t^(t>>8&$FFFFFF))
 	return double(strf("%u",w))
 
-	#define global ctype xsRandInt(%1,%2=0,%3=0x7FFFFFFF) randInt@XorShift(%1,%2,%3)
+	#define global ctype xsRandInt(%1,%2=0,%3=$7FFFFFFF) randInt@XorShift(%1,%2,%3)
 	#modcfunc local randInt int min,int max
 		return int(xsRand(thismod)\(max+1-min)+min)
 
 	#define global ctype xsRandFloat(%1,%2=0,%3=1) randFloat@XorShift(%1,%2,%3)
 	#modcfunc local randFloat double min,double max
-		return xsRand(thismod)\0xFFFF/0xFFFF*(max-min)+min
+		return xsRand(thismod)\$FFFF/$FFFF*(max-min)+min
 
 	#define global xsShuffle(%1,%2,%3) %tshuffle \
 		%i=length(%2) :\

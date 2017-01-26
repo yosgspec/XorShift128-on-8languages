@@ -1,62 +1,62 @@
 from XorShift import XorShift
 
 if __name__=="__main__":
-	#XorShiftä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã®åˆæœŸåŒ–
-	# è«–æ–‡ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚·ãƒ¼ãƒ‰
+	#XorShift—”ƒWƒFƒlƒŒ[ƒ^‚Ì‰Šú‰»
+	# ˜_•¶ƒfƒtƒHƒ‹ƒgƒV[ƒh
 	r_def=XorShift.defaultSeed()
-	# å›ºå®šå€¤ã‚·ãƒ¼ãƒ‰
+	# ŒÅ’è’lƒV[ƒh
 	r_const=XorShift(100)
-	# æ™‚é–“ã‚·ãƒ¼ãƒ‰
+	# ŠÔƒV[ƒh
 	r=XorShift()
 
-	#ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚·ãƒ¼ãƒ‰å€¤ã®å–å¾—
+	#ƒfƒtƒHƒ‹ƒgƒV[ƒh’l‚Ìæ“¾
 	print(">> defaults")
 	print(XorShift.defaults)
 
-	#é©ç”¨ã—ãŸã‚·ãƒ¼ãƒ‰å€¤ã®å–å¾—
+	#“K—p‚µ‚½ƒV[ƒh’l‚Ìæ“¾
 	print(">> seeds in r")
 	print(r.seeds)
 
-	#ä¹±æ•°ã®ç”Ÿãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+	#—”‚Ì¶ƒf[ƒ^‚ğæ“¾
 	print(">> rand 0 to UInt32Max")
 	for i in range(5):
 		print(r_def.rand())
 
-	#0-100ã®ä¹±æ•°(100å«ã‚€)ã‚’æ•´æ•°ã§å–å¾—
+	#0-100‚Ì—”(100ŠÜ‚Ş)‚ğ®”‚Åæ“¾
 	print(">> randInt 0 to 100")
 	for i in range(5):
 		print(r_const.randInt(0,100))
 
-	#0-1ã®ä¹±æ•°ã‚’æµ®éŠå°æ•°ç‚¹ã§å–å¾—
+	#0-1‚Ì—”‚ğ•‚—V¬”“_‚Åæ“¾
 	print(">> randFloat 0 to 1")
 	for i in range(5):
 		print(r.randFloat())
 
-	#listã®ã‚·ãƒ£ãƒƒãƒ•ãƒ«
-	#å€¤æ¸¡ã—ã¨ãªã‚‹ã®ã§å…ƒã®é…åˆ—ã¯ç ´å£Šã•ã‚Œãªã„
+	#list‚ÌƒVƒƒƒbƒtƒ‹
+	#’l“n‚µ‚Æ‚È‚é‚Ì‚ÅŒ³‚Ì”z—ñ‚Í”j‰ó‚³‚ê‚È‚¢
 	print(">> shuffle list")
 	a=list(range(0,20))
 	print(r.shuffle(a))
 	print(a)
 
-	#rangeã®ã‚·ãƒ£ãƒƒãƒ•ãƒ«
+	#range‚ÌƒVƒƒƒbƒtƒ‹
 	print(">> shuffle range")
 	b=range(0,20)
 	print(r.shuffle(b))
 	print(b)
 
-	#tuple(ã‚¿ãƒ—ãƒ«)ã®ã‚·ãƒ£ãƒƒãƒ•ãƒ«
+	#tuple(ƒ^ƒvƒ‹)‚ÌƒVƒƒƒbƒtƒ‹
 	print(">> shuffle tuple")
 	c=tuple(range(0,20))
 	print(r.shuffle(c))
 	print(c)
 
-	#iter(ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿)ã®ã‚·ãƒ£ãƒƒãƒ•ãƒ«
+	#iter(ƒCƒeƒŒ[ƒ^)‚ÌƒVƒƒƒbƒtƒ‹
 	print(">> shuffle iter")
 	d=iter(range(0,20))
 	print([i for i in r.shuffle(d)])
 	print([i for i in d])
 
-	#ä»Šã®ä¹±æ•°ã‚’å›ã—ãŸå›æ•°
+	#¡‚Ì—”‚ğ‰ñ‚µ‚½‰ñ”
 	print(">> randCount in r")
 	print(r.randCount)

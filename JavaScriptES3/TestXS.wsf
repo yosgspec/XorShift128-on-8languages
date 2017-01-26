@@ -1,0 +1,56 @@
+<job>
+	<script language="JScript" src="./XorShift.js" />
+	<script language="JScript">
+		(function(){
+			//XorShift乱数ジェネレータの初期化
+			// 論文デフォルトシード
+			var r_def=new XorShift.defaultSeed();
+			// 固定値シード
+			var r_var=new XorShift(100);
+			// 時間シード
+			var r=new XorShift();
+
+			//デフォルトシード値の取得
+			WScript.Echo(">> defaults");
+			for(var i in XorShift.defaults){
+				WScript.Echo(i+":"+XorShift.defaults[i]);
+			}
+
+			//適用したシード値の取得
+			WScript.Echo(">> seeds in r");
+			for(var i in r.seeds){
+				WScript.Echo(i+":"+r.seeds[i]);
+			}
+
+			//乱数の生データを取得
+			WScript.Echo(">> rand 0 to UInt32Max");
+			for(var i=0;i<5;i++){
+				WScript.Echo(r_def.rand());
+			}
+
+			//0-100の乱数(100含む)を整数で取得
+			WScript.Echo(">> randInt 0 to 100");
+			for(var i=0;i<5;i++){
+				WScript.Echo(r_var.randInt(0,100));
+			}
+
+			//0-1の乱数を浮遊小数点で取得
+			WScript.Echo(">> randFloat 0 to 1");
+			for(var i=0;i<5;i++){
+				WScript.Echo(r.randFloat());
+			}
+
+			//配列のシャッフル
+			//値渡しとなるので元の配列は破壊されない
+			WScript.Echo(">> shuffle Array");
+			var a=Array(20);
+			for(var i=0;i<a.length;i++) a[i]=i;
+			WScript.Echo(r.shuffle(a));
+			WScript.Echo(a);
+
+			//今の乱数を回した回数
+			WScript.Echo(">> randCount in r");
+			WScript.Echo(r.randCount);
+		})();
+	</script>
+</job>

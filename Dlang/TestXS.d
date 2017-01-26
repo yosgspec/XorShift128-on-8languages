@@ -3,49 +3,49 @@ import std.stdio;
 import XorShift:XorShift;
 
 void main(){
-	//XorShiftä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã®åˆæœŸåŒ–
-	// è«–æ–‡ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚·ãƒ¼ãƒ‰
+	//XorShift—”ƒWƒFƒlƒŒ[ƒ^‚Ì‰Šú‰»
+	// ˜_•¶ƒfƒtƒHƒ‹ƒgƒV[ƒh
 	auto r_def=new XorShift.defaultSeed();
-	// å›ºå®šå€¤ã‚·ãƒ¼ãƒ‰
+	// ŒÅ’è’lƒV[ƒh
 	auto r_const=new XorShift(100);
-	// æ™‚é–“ã‚·ãƒ¼ãƒ‰
+	// ŽžŠÔƒV[ƒh
 	auto r=new XorShift();
 
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚·ãƒ¼ãƒ‰å€¤ã®å–å¾—
+	//ƒfƒtƒHƒ‹ƒgƒV[ƒh’l‚ÌŽæ“¾
 	writeln(">> defaults");
 	writeln(XorShift.defaults);
 
-	//é©ç”¨ã—ãŸã‚·ãƒ¼ãƒ‰å€¤ã®å–å¾—
+	//“K—p‚µ‚½ƒV[ƒh’l‚ÌŽæ“¾
 	writeln(">> seeds in r");
 	writeln(r.seeds);
 
-	//ä¹±æ•°ã®ç”Ÿãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+	//—”‚Ì¶ƒf[ƒ^‚ðŽæ“¾
 	writeln(">> rand 0 to UInt32Max");
 	for(int i=0;i<5;i++){
 		writeln(r_def.rand());
 	}
 
-	//0-100ã®ä¹±æ•°(100å«ã‚€)ã‚’æ•´æ•°ã§å–å¾—
+	//0-100‚Ì—”(100ŠÜ‚Þ)‚ð®”‚ÅŽæ“¾
 	writeln(">> randInt 0 to 100");
 	for(int i=0;i<5;i++){
 		writeln(r_const.randInt(0,100));
 	}
 
-	//0-1ã®ä¹±æ•°ã‚’æµ®éŠå°æ•°ç‚¹ã§å–å¾—
+	//0-1‚Ì—”‚ð•‚—V¬”“_‚ÅŽæ“¾
 	writeln(">> randFloat 0 to 1");
 	for(int i=0;i<5;i++){
 		writeln(r.randFloat());
 	}
 
-	//é…åˆ—ã®ã‚·ãƒ£ãƒƒãƒ•ãƒ«
-	//å€¤æ¸¡ã—ã¨ãªã‚‹ã®ã§å…ƒã®é…åˆ—ã¯ç ´å£Šã•ã‚Œãªã„
+	//”z—ñ‚ÌƒVƒƒƒbƒtƒ‹
+	//’l“n‚µ‚Æ‚È‚é‚Ì‚ÅŒ³‚Ì”z—ñ‚Í”j‰ó‚³‚ê‚È‚¢
 	writeln(">> shuffle array");
 	auto a=new int[20];
 	foreach(i;0..a.length-1) a[i]=i;
 	writeln(r.shuffle(a));
 	writeln(a);
 
-	//ä»Šã®ä¹±æ•°ã‚’å›žã—ãŸå›žæ•°
+	//¡‚Ì—”‚ð‰ñ‚µ‚½‰ñ”
 	writeln(">> randCount in r");
 	writeln(r.randCount);
 }
