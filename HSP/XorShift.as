@@ -1,9 +1,29 @@
-#module XorShift seeds,randCount
-	#deffunc local staticNew
-		seedKeys="x","y","z","w"
-		defaults=123456789,362436069,521288629,88675123
+#ifndef XorShift
+seedKeys@XorShift="x","y","z","w"
+defaults@XorShift=123456789,362436069,521288629,88675123
+
+#module @randGen@XorShift co,x,y,z,w
+	#define global randGen@XorShift(%1,%2,%3,%4,%5) \
+		newmod %1,@randGen@XorShift,%2,%3,%4,%5
+	#modinit int _w,int _x,int _y,int _z
+		w=_w:x=_x:y=_y:z=_z
+		newlab co,1:return
+		*infLoop
+			t=x^(x<<11)
+			x=y
+			y=z
+			z=w
+			w=(w^(w>>19&0x1FFF))^(t^(t>>8&0xFFFFFF))
+			newlab co,1:return
+		goto*infLoop
 	return
 
+	#modcfunc next@XorShift
+		gosub co
+	return double(strf("%u",w))
+#global
+
+#module XorShift seeds,randCount,r
 	#define global xsSeedKeys seedKeys@XorShift
 	#define global ctype xsDefaults(%1) getDictionary@XorShift(%1,defaults@XorShift)
 	#modcfunc xsSeeds str key
@@ -20,7 +40,7 @@
 	return item
 
 	#define new(%1,%2=-1,%3=-1,%4=-1,%5=-1) \
-		dimtype %1,vartype("struct"): \
+		dimtype %1,5: \
 		newmod %1,XorShift,%2,%3,%4,%5
 	#modinit int _w,int _x,int _y,int _z
 		if _w!=-1 :w=_w :else :w=gettime(7)+1000*(gettime(6)+60*(gettime(5)+60*(gettime(4)+24*gettime(3))))
@@ -28,30 +48,22 @@
 		if _y!=-1 :y=_y :else :y=(w>>9)^(x<<6)
 		if _z!=-1 :z=_z :else :z=y>>7
 
-		dim seeds,4
-		seeds(0)=double(strf("%u",x))
-		seeds(1)=double(strf("%u",y))
-		seeds(2)=double(strf("%u",z))
-		seeds(3)=double(strf("%u",w))
+		seeds=double(strf("%u",x)),double(strf("%u",y)),double(strf("%u",z)),double(strf("%u",w))
 		randCount=0
+		randGen@XorShift r,w,x,y,z
 	return
 
 	#modcfunc xsRand
 		randCount++
-		t=x^(x<<11)
-		x=y
-		y=z
-		z=w
-		w=(w^(w>>19&$1FFF))^(t^(t>>8&$FFFFFF))
-	return double(strf("%u",w))
+	return next@XorShift(r)
 
-	#define global ctype xsRandInt(%1,%2=0,%3=$7FFFFFFF) randInt@XorShift(%1,%2,%3)
+	#define global ctype xsRandInt(%1,%2=0,%3=0x7FFFFFFF) randInt@XorShift(%1,%2,%3)
 	#modcfunc local randInt int min,int max
 		return int(xsRand(thismod)\(max+1-min)+min)
 
 	#define global ctype xsRandFloat(%1,%2=0,%3=1) randFloat@XorShift(%1,%2,%3)
 	#modcfunc local randFloat double min,double max
-		return xsRand(thismod)\$FFFF/$FFFF*(max-min)+min
+		return xsRand(thismod)\0xFFFF/0xFFFF*(max-min)+min
 
 	#define global xsShuffle(%1,%2,%3) %tshuffle \
 		%i=length(%2) :\
@@ -62,20 +74,26 @@
 	#modfunc local shuffle var arrLength,array arr
 		dimtype tmp,vartype(arr(0))
 		repeat arrLength-1
-			r=xsRandInt(thismod,cnt,arrLength-1)
+			_r=xsRandInt(thismod,cnt,arrLength-1)
 			tmp=arr(cnt)
-			arr(cnt)=arr(r)
-			arr(r)=tmp
+			arr(cnt)=arr(_r)
+			arr(_r)=tmp
 		loop
 	return
 #global
-staticNew@XorShift
 
-#module XorShift_defaultSeed
-	#define new(%1) new@XorShift \
-		%1, \
-		xsDefaults("w"), \
-		xsDefaults("x"), \
-		xsDefaults("y"), \
-		xsDefaults("z")
+#module XorShift_defaultSeed seeds,randCount,r
+	#define new(%1) \
+		dimtype %1,5: \
+		newmod %1,XorShift_defaultSeed
+	#modinit
+		x=xsDefaults("x")
+		y=xsDefaults("y")
+		z=xsDefaults("z")
+		w=xsDefaults("w")
+		seeds=x,y,z,w
+		randCount=0
+		randGen@XorShift r,w,x,y,z
+	return
 #global
+#endif

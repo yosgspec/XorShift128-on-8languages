@@ -1,3 +1,7 @@
+#ifndef XorShift
+seedKeys@XorShift="x","y","z","w"
+defaults@XorShift=123456789,362436069,521288629,88675123
+
 #module XorShift
 	#enum x=0
 	#enum y
@@ -12,11 +16,6 @@
 	#define global xsRandCount randCount@XorShift
 	#define global xsSeedKeys seedKeys@XorShift
 	#define global xsDefaults defaults@XorShift
-
-	#deffunc local staticNew
-		seedKeys="x","y","z","w"
-		defaults=123456789,362436069,521288629,88675123
-	return
 
 	#define new(%1,%2=-1,%3=-1,%4=-1,%5=-1) \
 		dim %1,5: \
@@ -67,7 +66,6 @@
 		loop
 	return
 #global
-staticNew@XorShift
 
 #module XorShift_defaultSeed
 	#define new(%1) new@XorShift \
@@ -77,3 +75,4 @@ staticNew@XorShift
 		xsDefaults.xsY, \
 		xsDefaults.xsZ
 #global
+#endif

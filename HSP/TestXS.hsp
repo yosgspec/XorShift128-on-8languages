@@ -1,7 +1,7 @@
-#cmpopt varinit 1
-#packopt name "XorShift"
 #runtime "hsp3cl"
+#packopt name "XorShift"
 #include "XorShift.as"
+#cmpopt varinit 1
 
 #module TestXS
 	#deffunc main
@@ -48,7 +48,7 @@
 		mes ">> xsShuffle array"
 		dim a,20
 		foreach a: a(cnt)=cnt: loop
-		
+
 		xsShuffle r,a,a_rand
 		out=""
 		foreach a_rand: out+=str(a_rand(cnt))+", ": loop

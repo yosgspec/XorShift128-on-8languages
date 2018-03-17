@@ -1,7 +1,8 @@
-#cmpopt varinit 1
-#packopt name "XorShift"
 #runtime "hsp3cl"
+#packopt name "XorShift"
+
 #include "XorShift.as"
+#cmpopt varinit 1
 
 #module TestXS
 	#deffunc main
