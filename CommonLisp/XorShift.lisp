@@ -11,7 +11,9 @@
 		:rand
 		:randInt
 		:randFloat
-		:shuffle))
+		:shuffle
+	)
+)
 (in-package XorShifts)
 
 (defconstant defaults '(
@@ -22,22 +24,23 @@
 ))
 
 (defclass XorShift()(
-	(w	:initarg :w
-		:initform (get-universal-time))
-	(x	:initarg :x
-		:initform nil)
-	(y	:initarg :y
-		:initform nil)
-	(z	:initarg :z
-		:initform nil)
-	(seeds
-		:initform nil)
-	(randCount
-		:reader randCount
-		:initform 0)))
+	(w         :initarg  :w
+	           :initform (get-universal-time))
+	(x         :initarg  :x
+	           :initform nil)
+	(y         :initarg  :y
+	           :initform nil)
+	(z         :initarg  :z
+	           :initform nil)
+	(seeds     :reader   seeds
+	           :initform nil)
+	(randCount :reader   randCount
+	           :initform 0
+	)
+))
 
-(defmethod new((me XorShift))
-	(with-slots (w x y z seeds) me 
+(defmethod initialize-instance :after ((self XorShift) &key)
+	(with-slots (w x y z seeds) self 
 		(unless x (setf x (ash w 13)))
 		(unless y (setf y (logxor (ash w -9) (ash x 6))))
 		(unless z (setf z (ash y -7)))
@@ -50,15 +53,9 @@
 	)
 )
 
-(defmethod seeds((me XorShift))
-	(if (= (randCount me) 0) (new me))
-	(slot-value me 'seeds)
-)
-
-(defmethod rand((me XorShift))
-	(if (= (randCount me) 0) (new me))
-	(incf (slot-value me 'randCount))
-	(with-slots (w x y z) me
+(defmethod rand((self XorShift))
+	(incf (slot-value self 'randCount))
+	(with-slots (w x y z) self
 		(let (tt)
 			(setf tt (logxor x (logand (ash x 11) #xFFFFFFFF)))
 			(setf x y)
@@ -69,23 +66,28 @@
 	)
 )
 
-(defmethod randInt((me XorShift) &optional (min 0) (max #x7FFFFFFF))
-	(+(mod(rand me) (1+(- max min))) min))
+(defmethod randInt((self XorShift) &optional (min 0) (max #x7FFFFFFF))
+	(+(mod(rand self) (1+(- max min))) min)
+)
 
-(defmethod randFloat((me XorShift) &optional (min 0) (max 1))
-	(+(*(float(/(mod(rand me) #xFFFF) #xFFFF)) (- max min)) min))
+(defmethod randFloat((self XorShift) &optional (min 0) (max 1))
+	(+(*(float(/(mod(rand self) #xFFFF) #xFFFF)) (- max min)) min)
+)
 
-(defmethod shuffle((me XorShift) _arr)
-	(let ((arr (copy-seq _arr)) r tmp)
-		(dotimes (i (1- (length arr))) (progn
-			(setf r (randInt me i (1- (length arr))))
-			(setf tmp (elt arr i))
-			(setf (elt arr i) (elt arr r))
-			(setf (elt arr r) tmp)))
-		arr))
+(defmethod shuffle((self XorShift) _arr)
+	(let ((arr (copy-seq _arr)))
+		(loop for i from 0 below (1- (length arr)) do
+			(let ((r (randInt self i (1- (length arr)))))
+				(rotatef (nth i arr) (nth r arr))
+			)
+		)
+		arr
+	)
+)
 
 (defclass XorShift-defaultSeed(XorShift)(
 	(w :initform (rest(assoc :w defaults)))
 	(x :initform (rest(assoc :x defaults)))
 	(y :initform (rest(assoc :y defaults)))
-	(z :initform (rest(assoc :z defaults)))))
+	(z :initform (rest(assoc :z defaults)))
+))
