@@ -1,4 +1,4 @@
-# XorShift128-on-9languages
+# XorShift128-on-10languages
 
 ![AllConcole!!!!!](https://github.com/yosgspec/XorShift128-on-8languages/blob/master/XorShiftTest.PNG)
   
