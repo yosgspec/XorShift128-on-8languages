@@ -7,22 +7,6 @@
 	:w 88675123
 })
 
-(defn make-XorShift
-	([](make-XorShift Environment/TickCount))
-	([{:keys [w x y z] :or {w Environment/TickCount,x nil,y nil,z nil}}]
-		(let [x (if(= nil x) (bit-shift-left w 13) x)]
-		(let [y (if(= nil y) (bit-xor (bit-shift-right w 9) (bit-shift-left x 6)) y)]
-		(let [z (if(= nil z) (bit-shift-right y 7) z)]
-		(let [seeds {
-			:x x
-			:y y
-			:z z
-			:w w
-		}]
-			(XorShift. (atom w) (atom x) (atom y) (atom z) seeds (atom 0))
-		))))
-	)
-)
 (defprotocol IXorShift
 	(-rand[self])
 	(randInt[self][self min max])
@@ -66,6 +50,22 @@
 })
 (defrecord XorShift[w x y z seeds randCount])
 (extend XorShift IXorShift MXorShift)
+(defn make-XorShift
+	([](make-XorShift Environment/TickCount))
+	([{:keys [w x y z] :or {w Environment/TickCount,x nil,y nil,z nil}}]
+		(let [x (if(= nil x) (bit-shift-left w 13) x)]
+		(let [y (if(= nil y) (bit-xor (bit-shift-right w 9) (bit-shift-left x 6)) y)]
+		(let [z (if(= nil z) (bit-shift-right y 7) z)]
+		(let [seeds {
+			:x x
+			:y y
+			:z z
+			:w w
+		}]
+			(XorShift. (atom w) (atom x) (atom y) (atom z) seeds (atom 0))
+		))))
+	)
+)
 
 (defrecord XorShift-defaultSeed[w x y z seeds randCount])
 (extend XorShift-defaultSeed IXorShift MXorShift)
