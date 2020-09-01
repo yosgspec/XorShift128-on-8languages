@@ -51,8 +51,8 @@
 (defrecord XorShift[w x y z seeds randCount])
 (extend XorShift IXorShift MXorShift)
 (defn make-XorShift
-	([](make-XorShift Environment/TickCount))
-	([{:keys [w x y z] :or {w Environment/TickCount,x nil,y nil,z nil}}]
+	([](make-XorShift (System/currentTimeMillis)))
+	([{:keys [w x y z] :or {w (System/currentTimeMillis),x nil,y nil,z nil}}]
 		(let [x (if(= nil x) (bit-shift-left w 13) x)]
 		(let [y (if(= nil y) (bit-xor (bit-shift-right w 9) (bit-shift-left x 6)) y)]
 		(let [z (if(= nil z) (bit-shift-right y 7) z)]
