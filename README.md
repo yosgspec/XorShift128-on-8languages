@@ -3,7 +3,7 @@
 ![AllConcole!!!!!](https://github.com/yosgspec/XorShift128-on-8languages/blob/master/XorShiftTest.PNG)
   
   
-XorShift128 on C++, Dlang, C#, VB.Net, JavaScript(Node.js) ,Python3, HSP, CommonLisp, Tcl
+XorShift128 on C++, Dlang, C#, VB.Net, JavaScript(Node.js) ,Python3, HSP, CommonLisp, Clojure, Tcl
 # Is Moving!
 [C++](http://rextester.com/EYPFX86053)  
 [Dlang](http://rextester.com/QIFR22984)  
@@ -12,6 +12,7 @@ XorShift128 on C++, Dlang, C#, VB.Net, JavaScript(Node.js) ,Python3, HSP, Common
 [JavaScript](https://paiza.io/projects/_K5qiZpBb-0l2C-oghF0Rw)  
 [Python](http://rextester.com/FQDO96576)  
 [CommonLisp](http://rextester.com/TRDUW96330)  
+[Clojure](https://rextester.com/AANE10084)  
 [HSP](http://hsproom.me/program/view/?p=206)  
 [Tcl](http://rextester.com/ZOQO67356)
 
